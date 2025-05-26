@@ -1,145 +1,105 @@
-<div class="container">
-    <h1>Analyse médicale</h1>
+<mat-card class="main-card">
+  <h1 class="title">🧪 Analyse médicale</h1>
 
-    <!-- 📝 Formulaire -->
-    <form (ngSubmit)="submitAnalysis()" #formRef="ngForm" class="form-grid">
-        <!-- Infos personnelles -->
-        <label>Prénom:
-            <input type="text" [(ngModel)]="form.firstName" name="firstName" required />
-        </label>
+  <form (ngSubmit)="submitAnalysis()" #formRef="ngForm" class="form-layout">
+    <!-- Informations personnelles -->
+    <div class="form-row">
+      <mat-form-field appearance="fill">
+        <mat-label>Prénom</mat-label>
+        <input matInput [(ngModel)]="form.firstName" name="firstName" required />
+      </mat-form-field>
 
-        <label>Nom:
-            <input type="text" [(ngModel)]="form.lastName" name="lastName" required />
-        </label>
+      <mat-form-field appearance="fill">
+        <mat-label>Nom</mat-label>
+        <input matInput [(ngModel)]="form.lastName" name="lastName" required />
+      </mat-form-field>
 
-        <label>Date de naissance:
-            <input type="date" [(ngModel)]="form.birthDate" name="birthDate" required />
-        </label>
-
-        <label>Sexe:
-            <select [(ngModel)]="form.gender" name="gender" required>
-                <option value="" disabled selected>Choisir le sexe</option>
-                <option value="Homme">Homme</option>
-                <option value="Femme">Femme</option>
-                <option value="Autre">Autre</option>
-            </select>
-        </label>
-
-        <!-- Mesures -->
-        <label>Taille (cm):
-            <input list="heightList" [(ngModel)]="form.height" name="height" type="number" required />
-            <datalist id="heightList">
-                <option *ngFor="let h of heightOptions" [value]="h"></option>
-            </datalist>
-        </label>
-
-        <label>Poids (kg):
-            <input list="weightList" [(ngModel)]="form.weight" name="weight" type="number" required />
-            <datalist id="weightList">
-                <option *ngFor="let w of weightOptions" [value]="w"></option>
-            </datalist>
-        </label>
-
-        <!-- Symptômes -->
-        <label>Symptômes:
-            <input list="symptomList" [(ngModel)]="currentSymptom" name="symptomTemp" type="text" placeholder="Tapez un symptôme" />
-            <datalist id="symptomList">
-                <option *ngFor="let s of symptomSuggestions" [value]="s"></option>
-            </datalist>
-        </label>
-        <button type="button" (click)="addSymptom()">Ajouter</button>
-
-        <div *ngIf="form.symptomNames.length > 0" class="symptom-list">
-            <strong>Symptômes sélectionnés :</strong>
-            <ul>
-                <li *ngFor="let s of form.symptomNames; let i = index">
-                    {{ s }}
-                    <button type="button" (click)="removeSymptom(i)">❌</button>
-                </li>
-            </ul>
-        </div>
-
-        <!-- Marqueurs -->
-        <div *ngFor="let result of form.biologicalResults; let i = index" class="marker-entry">
-            <label>Marqueur:
-                <input type="text" list="markerList"
-                       [(ngModel)]="form.biologicalResults[i].markerName"
-                       [attr.name]="'markerName-' + i" />
-                <datalist id="markerList">
-                    <option *ngFor="let m of markerSuggestions" [value]="m"></option>
-                </datalist>
-            </label>
-
-            <label>Valeur:
-                <input type="number"
-                       [(ngModel)]="form.biologicalResults[i].value"
-                       [attr.name]="'value-' + i" />
-            </label>
-        </div>
-        <button type="button" (click)="addBiologicalResult()">Ajouter un marqueur</button>
-
-        <!-- Boutons -->
-        <div class="button-group">
-            <button type="submit" [disabled]="loading">Analyser</button>
-            <button type="button" (click)="resetForm()">Réinitialiser</button>
-        </div>
-    </form>
-
-    <!-- Message de chargement -->
-    <div *ngIf="loading" class="loading-message">
-        🔄 Analyse en cours, veuillez patienter...
+      <mat-form-field appearance="fill">
+        <mat-label>Date de naissance</mat-label>
+        <input matInput type="date" [(ngModel)]="form.birthDate" name="birthDate" required />
+      </mat-form-field>
     </div>
 
-    <!-- Résumé minimal -->
-    <div *ngIf="response" class="summary-card">
-        <p>✅ Analyse terminée.</p>
-        <button type="button" (click)="exportPdf()">📄 Télécharger le rapport PDF</button>
+    <!-- Sexe et mesures -->
+    <div class="form-row">
+      <mat-form-field appearance="fill">
+        <mat-label>Sexe</mat-label>
+        <mat-select [(ngModel)]="form.gender" name="gender" required>
+          <mat-option value="Homme">Homme</mat-option>
+          <mat-option value="Femme">Femme</mat-option>
+          <mat-option value="Autre">Autre</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Taille (cm)</mat-label>
+        <input matInput type="number" [(ngModel)]="form.height" name="height" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Poids (kg)</mat-label>
+        <input matInput type="number" [(ngModel)]="form.weight" name="weight" required />
+      </mat-form-field>
     </div>
 
-    <!-- Contenu PDF invisible -->
-    <div id="pdf-content" style="display: none;">
-        <h1 class="pdf-title">🧪 Rapport d'analyse médicale</h1>
+    <!-- Symptômes -->
+    <mat-form-field appearance="fill" class="symptom-field">
+      <mat-label>Symptômes</mat-label>
+      <input
+        matInput
+        [(ngModel)]="currentSymptom"
+        name="symptomTemp"
+        [matAutocomplete]="autoSymptom"
+        (keydown.enter)="addSymptom(); $event.preventDefault()" />
+      <mat-autocomplete #autoSymptom="matAutocomplete">
+        <mat-option *ngFor="let s of symptomSuggestions" [value]="s">{{ s }}</mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
 
-        <section>
-            <h3>👤 Informations Patient</h3>
-            <p><strong>Nom :</strong> {{ form.lastName }} {{ form.firstName }}</p>
-            <p><strong>Date de naissance :</strong> {{ form.birthDate }}</p>
-            <p><strong>Sexe :</strong> {{ form.gender }}</p>
-            <p><strong>Taille :</strong> {{ form.height }} cm</p>
-            <p><strong>Poids :</strong> {{ form.weight }} kg</p>
-        </section>
-
-        <section *ngIf="form.symptomNames.length > 0">
-            <h3>🩺 Symptômes</h3>
-            <ul>
-                <li *ngFor="let s of form.symptomNames">{{ s }}</li>
-            </ul>
-        </section>
-
-        <section *ngIf="response?.biologicalResults?.length">
-            <h3>🧬 Résultats Biologiques</h3>
-            <ul>
-                <li *ngFor="let r of response.biologicalResults">
-                    {{ r.markerName }} : {{ r.value }}
-                </li>
-            </ul>
-        </section>
-
-        <section *ngIf="response?.suggestions?.length">
-            <h3>📋 Suggestions de Diagnostic</h3>
-            <ul>
-                <li *ngFor="let s of response.suggestions">
-                    <strong>{{ s.diseaseName }}</strong><br />
-                    Probabilité : {{ s.probability }}<br />
-                    Description : {{ s.description }}
-                </li>
-            </ul>
-        </section>
-
-        <section class="signature-section">
-            <p><strong>Signature du médecin :</strong></p>
-            <div class="signature-box"></div>
-            <p class="signature-note">Nom et cachet</p>
-        </section>
+    <div *ngIf="form.symptomNames.length" class="custom-chip-list">
+      <span *ngFor="let s of form.symptomNames; let i = index" class="chip">
+        {{ s }}
+        <button type="button" (click)="removeSymptom(i)">❌</button>
+      </span>
     </div>
-</div>
+
+    <!-- Marqueur + Valeur -->
+    <div class="form-row">
+      <mat-form-field appearance="fill">
+        <mat-label>Marqueur</mat-label>
+        <input
+          matInput
+          [(ngModel)]="form.biologicalResults[0].markerName"
+          name="markerName-0"
+          [matAutocomplete]="autoMarker" />
+        <mat-autocomplete #autoMarker="matAutocomplete">
+          <mat-option *ngFor="let marker of markerSuggestions" [value]="marker">
+            {{ marker }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Valeur</mat-label>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="form.biologicalResults[0].value"
+          name="value-0"
+          required />
+      </mat-form-field>
+    </div>
+
+    <!-- Boutons -->
+    <div class="button-group">
+      <button mat-flat-button color="primary" type="submit" [disabled]="loading">Analyser</button>
+      <button mat-stroked-button type="button" (click)="resetForm()">Réinitialiser</button>
+    </div>
+  </form>
+
+  <!-- Résumé & PDF -->
+  <mat-card *ngIf="response" class="result-card">
+    <p>✅ Analyse terminée</p>
+    <button mat-stroked-button (click)="exportPdf()">📄 Télécharger PDF</button>
+  </mat-card>
+</mat-card>
