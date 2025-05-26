@@ -5,7 +5,6 @@ import { AnalysisService } from '../services/analysis.service';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
-// ✅ Angular Material modules
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
