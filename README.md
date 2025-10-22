@@ -93,22 +93,16 @@ spring.h2.console.enabled=true
 ## 🔒 Améliorations prévues
 
 - Authentification utilisateur (admin / médecin)
-- Historique des analyses
 - Déploiement en ligne (via Firebase / Vercel / Render)
 - Tests unitaires (Jest / JUnit)
 
----
-
-## 📸 Aperçu (bientôt disponible)
-
-> Ajoutez ici des captures d’écran ou GIFs du formulaire, du résultat et du PDF.
 
 ---
 
 ## 👨‍💻 Auteur
 
 - **Yassine Bouchida**  
-  Étudiant en 4eme annee- G8– EMSI  
+  Étudiant en 4eme annee- EMSI  
   [github.com/Yassinebouchida](https://github.com/Yassinebouchida)
 
 ---
